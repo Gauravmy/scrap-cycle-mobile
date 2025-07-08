@@ -151,11 +151,3 @@ Feel free to raise an issue or ping me directly if you have questions during the
 
 ---
 
-> ⚠️ This app is a demo built for assignment purposes. No backend services or real OTP verification involved.
-
-```
-
----
-
-Let me know if you want the `README.md` file in downloadable format or need a **version with custom branding/logo** for Epicircle.
-```
