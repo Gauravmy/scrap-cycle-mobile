@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePickup } from '@/contexts/PickupContext';
-import { Calendar, MapPin, Clock, Plus, Package } from 'lucide-react';
+import { Calendar, MapPin, Clock, Plus, Package, TrendingUp, User, LogOut, Recycle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const CustomerDashboard: React.FC = () => {
@@ -14,15 +14,17 @@ const CustomerDashboard: React.FC = () => {
   
   const userRequests = getCustomerRequests(user?.id || '');
   const recentRequests = userRequests.slice(0, 3);
+  const completedCount = userRequests.filter(r => r.status === 'completed').length;
+  const pendingCount = userRequests.filter(r => r.status !== 'completed').length;
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'text-yellow-600 bg-yellow-100';
-      case 'accepted': return 'text-blue-600 bg-blue-100';
-      case 'in-process': return 'text-purple-600 bg-purple-100';
-      case 'pending-approval': return 'text-orange-600 bg-orange-100';
-      case 'completed': return 'text-green-600 bg-green-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'pending': return 'text-amber-600 bg-amber-100 border-amber-200';
+      case 'accepted': return 'text-blue-600 bg-blue-100 border-blue-200';
+      case 'in-process': return 'text-purple-600 bg-purple-100 border-purple-200';
+      case 'pending-approval': return 'text-orange-600 bg-orange-100 border-orange-200';
+      case 'completed': return 'text-green-600 bg-green-100 border-green-200';
+      default: return 'text-gray-600 bg-gray-100 border-gray-200';
     }
   };
 
@@ -31,94 +33,153 @@ const CustomerDashboard: React.FC = () => {
       case 'pending': return 'Pending';
       case 'accepted': return 'Accepted';
       case 'in-process': return 'In Process';
-      case 'pending-approval': return 'Pending Approval';
+      case 'pending-approval': return 'Awaiting Approval';
       case 'completed': return 'Completed';
       default: return status;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       {/* Header */}
-      <div className="bg-green-600 text-white p-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold">Welcome Back!</h1>
-            <p className="text-green-100">{user?.phone}</p>
+      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+        <div className="p-6 pb-8">
+          <div className="flex justify-between items-start mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                <User className="h-6 w-6" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold mb-1">Welcome back!</h1>
+                <p className="text-green-100 text-sm">{user?.phone}</p>
+              </div>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={logout} 
+              className="text-white hover:bg-white/20 rounded-xl"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
           </div>
-          <Button variant="outline" onClick={logout} className="text-green-600 border-white">
-            Logout
-          </Button>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                  <TrendingUp className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold">{completedCount}</div>
+                  <div className="text-green-100 text-sm">Completed</div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                  <Clock className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold">{pendingCount}</div>
+                  <div className="text-green-100 text-sm">Active</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="p-6 space-y-6 -mt-4">
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/schedule-pickup')}>
-            <CardContent className="p-6 text-center">
-              <Plus className="h-12 w-12 mx-auto text-green-600 mb-4" />
-              <h3 className="text-lg font-semibold text-gray-800">Schedule Pickup</h3>
-              <p className="text-gray-600 text-sm">Book a new scrap pickup</p>
+          <Card 
+            className="cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-gradient-to-br from-green-500 to-emerald-500 text-white" 
+            onClick={() => navigate('/schedule-pickup')}
+          >
+            <CardContent className="p-8 text-center">
+              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Plus className="h-8 w-8" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Schedule Pickup</h3>
+              <p className="text-green-100">Book your next scrap collection</p>
             </CardContent>
           </Card>
           
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/order-history')}>
-            <CardContent className="p-6 text-center">
-              <Package className="h-12 w-12 mx-auto text-blue-600 mb-4" />
-              <h3 className="text-lg font-semibold text-gray-800">Order History</h3>
-              <p className="text-gray-600 text-sm">View all your pickups</p>
+          <Card 
+            className="cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-white" 
+            onClick={() => navigate('/order-history')}
+          >
+            <CardContent className="p-8 text-center">
+              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Package className="h-8 w-8" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Order History</h3>
+              <p className="text-blue-100">Track all your pickups</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Recent Pickups */}
-        <Card>
+        <Card className="shadow-lg border-0">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-3 text-xl">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                <Recycle className="h-5 w-5 text-green-600" />
+              </div>
               Recent Pickups
             </CardTitle>
-            <CardDescription>Your latest pickup requests</CardDescription>
+            <CardDescription className="text-base">Your latest pickup requests</CardDescription>
           </CardHeader>
           <CardContent>
             {recentRequests.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No pickup requests yet</p>
+              <div className="text-center py-12">
+                <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Package className="h-10 w-10 text-gray-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-600 mb-3">No pickups yet</h3>
+                <p className="text-gray-500 mb-6 max-w-sm mx-auto">Start your eco-friendly journey by scheduling your first scrap pickup</p>
                 <Button 
-                  className="mt-4 bg-green-600 hover:bg-green-700"
+                  className="bg-green-600 hover:bg-green-700 rounded-xl px-8 py-3 text-lg font-semibold"
                   onClick={() => navigate('/schedule-pickup')}
                 >
                   Schedule Your First Pickup
                 </Button>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {recentRequests.map((request) => (
-                  <div key={request.id} className="border rounded-lg p-4 bg-white">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-gray-500" />
-                        <span className="font-medium">{request.pickupDate}</span>
-                        <span className="text-gray-500">{request.timeSlot}</span>
+                  <div key={request.id} className="border border-gray-200 rounded-2xl p-6 bg-white hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                          <Calendar className="h-6 w-6 text-green-600" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-3 mb-2">
+                            <span className="font-semibold text-lg">{request.pickupDate}</span>
+                            <span className="text-gray-500">{request.timeSlot}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-600 mb-2">
+                            <MapPin className="h-4 w-4" />
+                            <span className="text-sm">{request.address}</span>
+                          </div>
+                          {request.pickupCode && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium">Code:</span>
+                              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg font-mono text-sm font-semibold">
+                                {request.pickupCode}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(request.status)}`}>
+                      <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${getStatusColor(request.status)}`}>
                         {getStatusText(request.status)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <MapPin className="h-4 w-4" />
-                      <span className="text-sm">{request.address}</span>
-                    </div>
-                    {request.pickupCode && (
-                      <div className="mt-2 text-sm">
-                        <span className="font-medium">Pickup Code: </span>
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded font-mono">
-                          {request.pickupCode}
-                        </span>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
