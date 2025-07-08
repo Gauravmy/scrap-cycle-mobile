@@ -1,73 +1,161 @@
-# Welcome to your Lovable project
 
-## Project info
+# ♻️ Epicircle React Native Assignment
 
-**URL**: https://lovable.dev/projects/9cc9943b-255b-457a-a4ba-9b31ab0fcb90
+A dual-app mobile platform built with **React Native** to simulate scrap pickup operations. This project includes two apps:
 
-## How can I edit this code?
+- **📱 Customer App:** Users can schedule scrap pickups, view order history, and approve pickups.
+- **👷 Partner App:** Eco-warrior partners can manage assigned pickups, update item details, and request customer approvals.
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 📦 Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/9cc9943b-255b-457a-a4ba-9b31ab0fcb90) and start prompting.
+### ✅ Customer App
 
-Changes made via Lovable will be committed automatically to this repo.
+- 🔐 Phone Number + OTP Authentication
+- 🏠 Dashboard with Pickup Summary
+- 🗓️ Schedule Pickup (Date, Time, Address)
+- 📜 View Pickup Request History
+- 🔑 Approve Pickup Requests & Enter Pickup Code
 
-**Use your preferred IDE**
+### 🔧 Partner App
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- 🔐 Partner Login (Phone Number + OTP)
+- 📋 View Assigned Pickups
+- 📦 Accept, Start, and Complete Pickup Flow
+- 📝 Add Scrap Item Details
+- 📮 Submit for Approval
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 🌐 Tech Stack
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+| Tech/Tool        | Purpose                            |
+|------------------|------------------------------------|
+| React Native     | Mobile App Development             |
+| React Navigation | Screen Navigation                  |
+| AsyncStorage     | Local Data Persistence             |
+| Axios/Fetch      | API Requests (Mocked)              |
+| MockAPI.io / json-server | Mock Backend APIs         |
+| Context API / Redux | State Management (optional)     |
+| Expo             | Development Environment            |
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🧪 How to Run Locally
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/epicircle-assignment.git
+cd epicircle-assignment
+````
+
+### 2. Install Dependencies
+
+```bash
+npm install
+# or
+yarn install
 ```
 
-**Edit a file directly in GitHub**
+### 3. Start the App (Expo)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+npx expo start
+```
 
-**Use GitHub Codespaces**
+> Make sure to run the Customer and Partner apps on **separate terminals/devices** if building separately.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 🧪 Mock API Setup (Options)
 
-This project is built with:
+### Option 1: Use `MockAPI.io`
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+* Create two resources:
 
-## How can I deploy this project?
+  * `customers`
+  * `pickups`
+* Replace base URL in your code accordingly.
 
-Simply open [Lovable](https://lovable.dev/projects/9cc9943b-255b-457a-a4ba-9b31ab0fcb90) and click on Share -> Publish.
+### Option 2: Use `json-server` locally
 
-## Can I connect a custom domain to my Lovable project?
+```bash
+npm install -g json-server
 
-Yes, you can!
+# Create a db.json file
+json-server --watch db.json --port 3001
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Sample `db.json`
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+```json
+{
+  "customers": [],
+  "pickups": []
+}
+```
+
+---
+
+## 🎨 UI/UX Highlights
+
+* ✅ Minimal, eco-friendly theme (greens/blues)
+* 📍 Google Map integration with location preview
+* 🚦 Real-time pickup status updates
+* 🧾 Interactive order history with approval modals
+* 📱 Responsive layouts with smooth transitions
+
+---
+
+## 📷 Screenshots
+
+| Customer Dashboard                          | Partner Pickup List                     |
+| ------------------------------------------- | --------------------------------------- |
+| ![Customer](screens/customer_dashboard.png) | ![Partner](screens/partner_pickups.png) |
+
+---
+
+## 🚀 Project Structure
+
+```
+📁 customer-app/
+📁 partner-app/
+📁 assets/
+📄 App.js
+📄 README.md
+```
+
+---
+
+## 📝 Future Improvements
+
+* 🔔 Push Notifications
+* 🧭 Embedded Map Navigation
+* 🧠 Smart Pickup Scheduling
+* 🛡️ Role-Based Access Control (RBAC)
+
+---
+
+## 👨‍💻 Developed By
+
+* **Your Name**
+ Gaurav Dhakad
+
+---
+
+## 📬 Questions?
+
+Feel free to raise an issue or ping me directly if you have questions during the review.
+
+---
+
+> ⚠️ This app is a demo built for assignment purposes. No backend services or real OTP verification involved.
+
+```
+
+---
+
+Let me know if you want the `README.md` file in downloadable format or need a **version with custom branding/logo** for Epicircle.
+```
