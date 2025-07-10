@@ -15,7 +15,6 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { useFadeInAnimation } from '@/hooks/useAnimations';
 
 const SchedulePickup: React.FC = () => {
   const { user } = useAuth();
@@ -30,10 +29,6 @@ const SchedulePickup: React.FC = () => {
     mapLink: ''
   });
   const [loading, setLoading] = useState(false);
-
-  // Animation refs
-  const headerRef = useFadeInAnimation(0);
-  const cardRef = useFadeInAnimation(200);
 
   const timeSlots = [
     '9:00 AM - 10:00 AM',
@@ -90,7 +85,7 @@ const SchedulePickup: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6" ref={headerRef}>
+      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6">
         <div className="flex items-center gap-4 mb-6">
           <Button 
             variant="ghost" 
@@ -110,21 +105,21 @@ const SchedulePickup: React.FC = () => {
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                   currentStep >= step.id 
-                    ? 'bg-white text-green-600 scale-110' 
-                    : 'bg-white/20 text-white scale-100'
+                    ? 'bg-white text-green-600' 
+                    : 'bg-white/20 text-white'
                 }`}>
                   <step.icon className="h-5 w-5" />
                 </div>
                 <span className={`font-medium transition-all duration-300 ${
-                  currentStep >= step.id ? 'text-white scale-105' : 'text-green-200 scale-100'
+                  currentStep >= step.id ? 'text-white' : 'text-green-200'
                 }`}>
                   {step.title}
                 </span>
               </div>
               {index < steps.length - 1 && (
                 <div className={`flex-1 h-1 rounded-full transition-all duration-500 ${
-                  currentStep > step.id ? 'bg-white scale-x-100' : 'bg-white/20 scale-x-0'
-                }`} style={{ transformOrigin: 'left' }} />
+                  currentStep > step.id ? 'bg-white' : 'bg-white/20'
+                }`} />
               )}
             </React.Fragment>
           ))}
@@ -132,7 +127,7 @@ const SchedulePickup: React.FC = () => {
       </div>
 
       <div className="p-6 -mt-4">
-        <Card className="max-w-2xl mx-auto shadow-xl border-0" ref={cardRef}>
+        <Card className="max-w-2xl mx-auto shadow-xl border-0">
           <CardHeader className="pb-6">
             <CardTitle className="text-2xl">
               {currentStep === 1 && 'When do you need pickup?'}
