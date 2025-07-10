@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { useFadeInAnimation } from '@/hooks/useAnimations';
 
 const SchedulePickup: React.FC = () => {
   const { user } = useAuth();
@@ -29,6 +30,10 @@ const SchedulePickup: React.FC = () => {
     mapLink: ''
   });
   const [loading, setLoading] = useState(false);
+
+  // Animation refs
+  const headerRef = useFadeInAnimation(0);
+  const cardRef = useFadeInAnimation(200);
 
   const timeSlots = [
     '9:00 AM - 10:00 AM',
@@ -85,13 +90,13 @@ const SchedulePickup: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6">
+      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6" ref={headerRef}>
         <div className="flex items-center gap-4 mb-6">
           <Button 
             variant="ghost" 
             size="sm" 
             onClick={() => navigate('/customer')} 
-            className="text-white hover:bg-white/20 rounded-xl"
+            className="text-white hover:bg-white/20 rounded-xl transition-all duration-200"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -103,23 +108,23 @@ const SchedulePickup: React.FC = () => {
           {steps.map((step, index) => (
             <React.Fragment key={step.id}>
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                   currentStep >= step.id 
-                    ? 'bg-white text-green-600' 
-                    : 'bg-white/20 text-white'
+                    ? 'bg-white text-green-600 scale-110' 
+                    : 'bg-white/20 text-white scale-100'
                 }`}>
                   <step.icon className="h-5 w-5" />
                 </div>
-                <span className={`font-medium transition-all ${
-                  currentStep >= step.id ? 'text-white' : 'text-green-200'
+                <span className={`font-medium transition-all duration-300 ${
+                  currentStep >= step.id ? 'text-white scale-105' : 'text-green-200 scale-100'
                 }`}>
                   {step.title}
                 </span>
               </div>
               {index < steps.length - 1 && (
-                <div className={`flex-1 h-1 rounded-full transition-all ${
-                  currentStep > step.id ? 'bg-white' : 'bg-white/20'
-                }`} />
+                <div className={`flex-1 h-1 rounded-full transition-all duration-500 ${
+                  currentStep > step.id ? 'bg-white scale-x-100' : 'bg-white/20 scale-x-0'
+                }`} style={{ transformOrigin: 'left' }} />
               )}
             </React.Fragment>
           ))}
@@ -127,7 +132,7 @@ const SchedulePickup: React.FC = () => {
       </div>
 
       <div className="p-6 -mt-4">
-        <Card className="max-w-2xl mx-auto shadow-xl border-0">
+        <Card className="max-w-2xl mx-auto shadow-xl border-0" ref={cardRef}>
           <CardHeader className="pb-6">
             <CardTitle className="text-2xl">
               {currentStep === 1 && 'When do you need pickup?'}
@@ -150,7 +155,7 @@ const SchedulePickup: React.FC = () => {
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-full h-14 justify-start text-left font-normal text-lg border-2 rounded-xl",
+                          "w-full h-14 justify-start text-left font-normal text-lg border-2 rounded-xl transition-all duration-200 hover:scale-[1.01]",
                           !formData.pickupDate && "text-muted-foreground"
                         )}
                       >
@@ -177,7 +182,7 @@ const SchedulePickup: React.FC = () => {
                     Time Slot
                   </Label>
                   <Select onValueChange={(value) => setFormData(prev => ({ ...prev, timeSlot: value }))}>
-                    <SelectTrigger className="h-14 text-lg border-2 rounded-xl">
+                    <SelectTrigger className="h-14 text-lg border-2 rounded-xl transition-all duration-200 hover:scale-[1.01]">
                       <SelectValue placeholder="Choose convenient time" />
                     </SelectTrigger>
                     <SelectContent>
@@ -204,7 +209,7 @@ const SchedulePickup: React.FC = () => {
                     placeholder="Enter your complete pickup address..."
                     value={formData.address}
                     onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                    className="min-h-[120px] text-lg border-2 rounded-xl resize-none"
+                    className="min-h-[120px] text-lg border-2 rounded-xl resize-none transition-all duration-200 focus:scale-[1.01]"
                   />
                 </div>
 
@@ -218,7 +223,7 @@ const SchedulePickup: React.FC = () => {
                     placeholder="https://maps.google.com/..."
                     value={formData.mapLink}
                     onChange={(e) => setFormData(prev => ({ ...prev, mapLink: e.target.value }))}
-                    className="h-14 text-lg border-2 rounded-xl"
+                    className="h-14 text-lg border-2 rounded-xl transition-all duration-200 focus:scale-[1.01]"
                   />
                   <p className="text-sm text-gray-500">
                     Add a Google Maps link to help our partner find your location easily
@@ -253,7 +258,7 @@ const SchedulePickup: React.FC = () => {
                           href={formData.mapLink} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 text-sm underline mt-2 inline-block"
+                          className="text-blue-600 hover:text-blue-800 text-sm underline mt-2 inline-block transition-colors duration-200"
                         >
                           View on Google Maps
                         </a>
@@ -292,7 +297,7 @@ const SchedulePickup: React.FC = () => {
                 <Button
                   variant="outline"
                   onClick={() => setCurrentStep(prev => prev - 1)}
-                  className="flex-1 h-12 rounded-xl border-2"
+                  className="flex-1 h-12 rounded-xl border-2 transition-all duration-200 hover:scale-105"
                 >
                   Previous
                 </Button>
@@ -301,7 +306,7 @@ const SchedulePickup: React.FC = () => {
               {currentStep < 3 ? (
                 <Button
                   onClick={handleNext}
-                  className="flex-1 h-12 bg-green-600 hover:bg-green-700 rounded-xl text-lg font-semibold"
+                  className="flex-1 h-12 bg-green-600 hover:bg-green-700 rounded-xl text-lg font-semibold transition-all duration-200 hover:scale-105"
                 >
                   Continue
                 </Button>
@@ -309,7 +314,7 @@ const SchedulePickup: React.FC = () => {
                 <Button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="flex-1 h-12 bg-green-600 hover:bg-green-700 rounded-xl text-lg font-semibold"
+                  className="flex-1 h-12 bg-green-600 hover:bg-green-700 rounded-xl text-lg font-semibold transition-all duration-200 hover:scale-105 disabled:hover:scale-100"
                 >
                   {loading ? (
                     <div className="flex items-center gap-2">

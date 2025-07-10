@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { usePickup } from '@/contexts/PickupContext';
 import { Calendar, MapPin, Clock, Plus, Package, TrendingUp, User, LogOut, Recycle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useStaggerAnimation, useCardHoverAnimation, useFadeInAnimation } from '@/hooks/useAnimations';
 
 const CustomerDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -16,6 +17,14 @@ const CustomerDashboard: React.FC = () => {
   const recentRequests = userRequests.slice(0, 3);
   const completedCount = userRequests.filter(r => r.status === 'completed').length;
   const pendingCount = userRequests.filter(r => r.status !== 'completed').length;
+
+  // Animation refs
+  const headerRef = useFadeInAnimation(0);
+  const statsRef = useStaggerAnimation('.stat-card', 100);
+  const actionsRef = useStaggerAnimation('.action-card', 150);
+  const recentRef = useStaggerAnimation('.recent-card', 80);
+  const actionCard1Ref = useCardHoverAnimation();
+  const actionCard2Ref = useCardHoverAnimation();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -43,7 +52,7 @@ const CustomerDashboard: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       {/* Header */}
       <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
-        <div className="p-6 pb-8">
+        <div className="p-6 pb-8" ref={headerRef}>
           <div className="flex justify-between items-start mb-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -58,15 +67,15 @@ const CustomerDashboard: React.FC = () => {
               variant="ghost" 
               size="sm"
               onClick={logout} 
-              className="text-white hover:bg-white/20 rounded-xl"
+              className="text-white hover:bg-white/20 rounded-xl transition-all duration-200"
             >
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+          <div className="grid grid-cols-2 gap-4" ref={statsRef}>
+            <div className="stat-card bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                   <TrendingUp className="h-5 w-5" />
@@ -77,7 +86,7 @@ const CustomerDashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+            <div className="stat-card bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                   <Clock className="h-5 w-5" />
@@ -94,9 +103,10 @@ const CustomerDashboard: React.FC = () => {
 
       <div className="p-6 space-y-6 -mt-4">
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4" ref={actionsRef}>
           <Card 
-            className="cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-gradient-to-br from-green-500 to-emerald-500 text-white" 
+            ref={actionCard1Ref}
+            className="action-card cursor-pointer border-0 shadow-lg bg-gradient-to-br from-green-500 to-emerald-500 text-white transition-all duration-300" 
             onClick={() => navigate('/schedule-pickup')}
           >
             <CardContent className="p-8 text-center">
@@ -109,7 +119,8 @@ const CustomerDashboard: React.FC = () => {
           </Card>
           
           <Card 
-            className="cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-white" 
+            ref={actionCard2Ref}
+            className="action-card cursor-pointer border-0 shadow-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-white transition-all duration-300" 
             onClick={() => navigate('/order-history')}
           >
             <CardContent className="p-8 text-center">
@@ -142,16 +153,16 @@ const CustomerDashboard: React.FC = () => {
                 <h3 className="text-xl font-semibold text-gray-600 mb-3">No pickups yet</h3>
                 <p className="text-gray-500 mb-6 max-w-sm mx-auto">Start your eco-friendly journey by scheduling your first scrap pickup</p>
                 <Button 
-                  className="bg-green-600 hover:bg-green-700 rounded-xl px-8 py-3 text-lg font-semibold"
+                  className="bg-green-600 hover:bg-green-700 rounded-xl px-8 py-3 text-lg font-semibold transition-all duration-200"
                   onClick={() => navigate('/schedule-pickup')}
                 >
                   Schedule Your First Pickup
                 </Button>
               </div>
             ) : (
-              <div className="space-y-4">
-                {recentRequests.map((request) => (
-                  <div key={request.id} className="border border-gray-200 rounded-2xl p-6 bg-white hover:shadow-md transition-shadow">
+              <div className="space-y-4" ref={recentRef}>
+                {recentRequests.map((request, index) => (
+                  <div key={request.id} className={`recent-card border border-gray-200 rounded-2xl p-6 bg-white transition-all duration-300 hover:shadow-md`}>
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">

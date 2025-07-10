@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { usePickup } from '@/contexts/PickupContext';
 import { Calendar, MapPin, Phone, Package, TrendingUp, Clock, User, LogOut, Truck, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useStaggerAnimation, useCardHoverAnimation, useFadeInAnimation } from '@/hooks/useAnimations';
 
 const PartnerDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -23,6 +24,12 @@ const PartnerDashboard: React.FC = () => {
     completed: assignedRequests.filter(r => r.status === 'completed').length,
     inProgress: assignedRequests.filter(r => ['accepted', 'in-process', 'pending-approval'].includes(r.status)).length
   };
+
+  // Animation refs
+  const headerRef = useFadeInAnimation(0);
+  const statsRef = useStaggerAnimation('.stat-card', 80);
+  const availableRef = useStaggerAnimation('.available-card', 120);
+  const assignedRef = useStaggerAnimation('.assigned-card', 100);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -57,7 +64,7 @@ const PartnerDashboard: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-        <div className="p-6 pb-8">
+        <div className="p-6 pb-8" ref={headerRef}>
           <div className="flex justify-between items-start mb-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -72,15 +79,15 @@ const PartnerDashboard: React.FC = () => {
               variant="ghost" 
               size="sm"
               onClick={logout} 
-              className="text-white hover:bg-white/20 rounded-xl"
+              className="text-white hover:bg-white/20 rounded-xl transition-all duration-200"
             >
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4" ref={statsRef}>
+            <div className="stat-card bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-amber-500/20 rounded-xl flex items-center justify-center">
                   <Clock className="h-5 w-5 text-amber-200" />
@@ -92,7 +99,7 @@ const PartnerDashboard: React.FC = () => {
               </div>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+            <div className="stat-card bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
                   <Truck className="h-5 w-5 text-purple-200" />
@@ -104,7 +111,7 @@ const PartnerDashboard: React.FC = () => {
               </div>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+            <div className="stat-card bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
                   <CheckCircle className="h-5 w-5 text-green-200" />
@@ -116,7 +123,7 @@ const PartnerDashboard: React.FC = () => {
               </div>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+            <div className="stat-card bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
                   <Package className="h-5 w-5 text-blue-200" />
@@ -144,9 +151,9 @@ const PartnerDashboard: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-4" ref={availableRef}>
                 {pendingRequests.slice(0, 3).map((request) => (
-                  <div key={request.id} className="border border-gray-200 rounded-2xl p-6 bg-gradient-to-r from-white to-amber-50/30 hover:shadow-lg transition-all">
+                  <div key={request.id} className="available-card border border-gray-200 rounded-2xl p-6 bg-gradient-to-r from-white to-amber-50/30 transition-all duration-300 hover:shadow-lg">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
@@ -175,7 +182,7 @@ const PartnerDashboard: React.FC = () => {
                       </div>
                       <Button 
                         size="lg" 
-                        className="bg-blue-600 hover:bg-blue-700 rounded-xl px-6 py-3 font-semibold"
+                        className="bg-blue-600 hover:bg-blue-700 rounded-xl px-6 py-3 font-semibold transition-all duration-200 hover:scale-105"
                         onClick={() => handleAcceptRequest(request.id)}
                       >
                         Accept Request
@@ -187,7 +194,7 @@ const PartnerDashboard: React.FC = () => {
                           href={request.mapLink} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 font-medium underline"
+                          className="text-blue-600 hover:text-blue-800 font-medium underline transition-colors duration-200"
                         >
                           📍 Open in Google Maps
                         </a>
@@ -213,7 +220,7 @@ const PartnerDashboard: React.FC = () => {
               <Button 
                 variant="outline" 
                 onClick={() => navigate('/partner/pickups')}
-                className="rounded-xl border-2"
+                className="rounded-xl border-2 transition-all duration-200 hover:scale-105"
               >
                 View All
               </Button>
@@ -231,11 +238,11 @@ const PartnerDashboard: React.FC = () => {
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-4" ref={assignedRef}>
                 {assignedRequests.slice(0, 3).map((request) => (
                   <div 
                     key={request.id} 
-                    className="border border-gray-200 rounded-2xl p-6 bg-white cursor-pointer hover:shadow-lg transition-all"
+                    className="assigned-card border border-gray-200 rounded-2xl p-6 bg-white cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.01]"
                     onClick={() => navigate(`/partner/pickup/${request.id}`)}
                   >
                     <div className="flex justify-between items-start mb-4">
